@@ -1,0 +1,3 @@
+variable "var_nsg" {
+  
+}

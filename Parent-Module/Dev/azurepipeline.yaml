@@ -1,0 +1,53 @@
+trigger:
+  - feature/project-dev
+
+pool:
+  name: Agent007
+
+stages:
+  - stage: "TerraformWorkflow"
+    displayName: "Terraform Plan and Apply Stage"
+
+    jobs:
+      - job: "TerraformJob"
+        displayName: "Run Init, Validate, Plan and Apply"
+
+        steps:
+          - task: TerraformInstaller@1
+            displayName: "Installing Terraform"
+
+          - script: terraform version
+            displayName: "Checking Version"
+
+          # 1. Init
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)\Parent-Module\Dev'
+              backendServiceArm: 'agent-azlz-pr1'
+              backendAzureRmOverrideSubscriptionID: 'ec2a3393-5658-4171-90d5-1188fd9f69d6'
+              backendAzureRmResourceGroupName: 'ut-backup-rg'
+              backendAzureRmStorageAccountName: 'backupstg007'
+              backendAzureRmContainerName: 'aod-storage'
+              backendAzureRmKey: 'dev/terraform.tfstate'
+              backendAzureRmUseAzureADAuth: true
+
+          # 2. Validate
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
+              workingDirectory: '$(System.DefaultWorkingDirectory)\Parent-Module\Dev'
+
+          # 3. Plan 
+          - task: TerraformTaskV4@4
+            displayName: "Running Terraform Plan"  
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'agent-azlz-pr1'
+              workingDirectory: '$(System.DefaultWorkingDirectory)\Parent-Module\Dev'
+            env:
+              TF_VAR_admin_username: $(admin_username)
+              TF_VAR_admin_password: $(admin_password)

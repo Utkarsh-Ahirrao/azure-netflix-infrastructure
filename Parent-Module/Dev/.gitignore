@@ -1,0 +1,46 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars.json
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Terraform lock file
+# Keep this committed for provider version consistency
+# .terraform.lock.hcl
+
+# Azure / CLI
+.azure/
+
+# Environment / Secrets
+.env
+.env.*
+*.secret
+*.key
+*.pem
+
+# SSH
+id_rsa
+id_rsa.pub
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
